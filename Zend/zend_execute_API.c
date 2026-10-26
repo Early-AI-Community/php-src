@@ -431,6 +431,10 @@ ZEND_API void zend_shutdown_executor_values(bool fast_shutdown)
 	}
 
 	zend_objects_store_free_object_storage(&EG(objects_store), fast_shutdown);
+
+	/* On fast shutdown the backtrace is discarded together with the request
+	 * heap, make sure no dangling zval is left behind. */
+	ZVAL_UNDEF(&EG(last_fatal_error_backtrace));
 }
 
 void shutdown_executor(void) /* {{{ */
